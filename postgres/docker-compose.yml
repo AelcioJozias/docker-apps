@@ -1,0 +1,52 @@
+# Compose pronto para uso: PostgreSQL
+# Projeto: banco Postgres local para desenvolvimento
+
+name: postgres-local
+
+services:
+  postgres:
+    # Imagem oficial do PostgreSQL
+    image: postgres:17-alpine
+    container_name: postgres-local
+
+    # Reinicia automaticamente caso o processo caia
+    restart: unless-stopped
+
+    environment:
+      # Credenciais simples para ambiente local/dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+      # Banco inicial criado no primeiro start
+      POSTGRES_DB: app_db
+
+      # Define o locale/encoding padrao em UTF-8
+      LANG: C.UTF-8
+
+    ports:
+      # Porta do host:porta do container
+      - "5432:5432"
+
+    volumes:
+      # Volume nomeado para persistir dados entre recreacoes do container
+      - postgres_data:/var/lib/postgresql/data
+
+      # (Opcional) scripts .sql e .sh executados apenas na inicializacao do banco vazio
+      # Crie a pasta ./postgres-init na raiz e coloque seus scripts la
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      # Verifica se o servidor esta pronto para conexoes
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # Evita privilegios extras desnecessarios no processo
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  # Armazena os dados fisicos do PostgreSQL de forma persistente
+  postgres_data:
