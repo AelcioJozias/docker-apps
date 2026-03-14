@@ -21,50 +21,8 @@ A proposta e:
 
 ### PostgreSQL
 
-Local: postgres/docker-compose.yml
-
-Principais pontos:
-
-- imagem oficial postgres:17-alpine
-- volume nomeado para persistencia de dados
-- healthcheck com pg_isready
-- reinicio automatico com unless-stopped
-- scripts de inicializacao opcionais em postgres/postgres-init
-
-Credenciais atuais para dev local:
-
-- usuario: postgres
-- senha: postgres
-- banco: app_db
-- porta: 5432
-
-## Como subir o PostgreSQL
-
-1. Entre na pasta do app:
-
-    cd postgres
-
-2. Suba em background:
-
-    docker compose up -d
-
-3. Verifique status:
-
-    docker compose ps
-
-4. Teste conexao com consulta SQL:
-
-    docker compose exec -T postgres psql -U postgres -d app_db -c "SELECT current_database(), current_user, version();"
-
-## Como parar e remover o stack
-
-Dentro da pasta postgres:
-
-    docker compose down
-
-Para remover tambem os dados persistidos:
-
-    docker compose down -v
+Para ver como subir, testar, parar e configurar o container PostgreSQL, acesse [postgres/README.md](./postgres/README.md).
+Arquivo compose do servico: [postgres/docker-compose.yml](./postgres/docker-compose.yml).
 
 ## Convencoes do repositorio
 
